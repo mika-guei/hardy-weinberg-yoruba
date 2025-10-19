@@ -32,16 +32,11 @@ def processar_dados(arquivo):
     dados["freq_refalt_es"] = 2 * dados["alt"] * (1 - dados["alt"])
     dados["freq_altalt_es"] = dados["alt"]**2
 
-    # --- Números esperados (para chi2) ---
-    dados["exp_refref"] = dados["freq_refref_es"] * n_individuos
-    dados["exp_refalt"] = dados["freq_refalt_es"] * n_individuos
-    dados["exp_altalt"] = dados["freq_altalt_es"] * n_individuos
-
     # --- Teste chi2 ---
     dados["chi2"] = (
-        ((dados["ref.ref"] - dados["exp_refref"])**2 / dados["exp_refref"]) +
-        ((dados["ref.alt"] - dados["exp_refalt"])**2 / dados["exp_refalt"]) +
-        ((dados["alt.alt"] - dados["exp_altalt"])**2 / dados["exp_altalt"])
+        ((dados["ref.ref"] - dados["freq_refref_es"])**2 / dados["freq_refref_es"]) +
+        ((dados["ref.alt"] - dados["freq_refalt_es"])**2 / dados["freq_refalt_es"]) +
+        ((dados["alt.alt"] - dados["freq_altalt_es"])**2 / dados["freq_altalt_es"])
     )
 
     dados["p_valor"] = chi2.sf(dados["chi2"], df=1)
