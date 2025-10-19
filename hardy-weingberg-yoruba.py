@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import chi2
 
 st.set_page_config(page_title="Hardy-Weinberg - Comparação braços cromossomo 21", layout="wide")
 
@@ -27,16 +28,16 @@ def processar_dados(arquivo):
     dados["freq_refalt_obs"] = dados["ref.alt"] / n_individuos
     dados["freq_altalt_obs"] = dados["alt.alt"] / n_individuos
 
-    dados["freq_refref_exp"] = (1 - dados["alt"])**2
-    dados["freq_refalt_exp"] = 2 * dados["alt"] * (1 - dados["alt"])
-    dados["freq_altalt_exp"] = dados["alt"]**2
+    dados["freq_refref_es"] = (1 - dados["alt"])**2
+    dados["freq_refalt_es"] = 2 * dados["alt"] * (1 - dados["alt"])
+    dados["freq_altalt_es"] = dados["alt"]**2
 
-    # --- Números esperados (para χ²) ---
-    dados["exp_refref"] = dados["freq_refref_exp"] * n_individuos
-    dados["exp_refalt"] = dados["freq_refalt_exp"] * n_individuos
-    dados["exp_altalt"] = dados["freq_altalt_exp"] * n_individuos
+    # --- Números esperados (para chi2) ---
+    dados["exp_refref"] = dados["freq_refref_es"] * n_individuos
+    dados["exp_refalt"] = dados["freq_refalt_es"] * n_individuos
+    dados["exp_altalt"] = dados["freq_altalt_es"] * n_individuos
 
-    # --- Teste χ² ---
+    # --- Teste chi2 ---
     dados["chi2"] = (
         ((dados["ref.ref"] - dados["exp_refref"])**2 / dados["exp_refref"]) +
         ((dados["ref.alt"] - dados["exp_refalt"])**2 / dados["exp_refalt"]) +
