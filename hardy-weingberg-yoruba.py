@@ -31,6 +31,21 @@ def processar_dados(arquivo):
     dados["freq_refalt_exp"] = 2 * dados["alt"] * (1 - dados["alt"])
     dados["freq_altalt_exp"] = dados["alt"]**2
 
+    # --- Números esperados (para χ²) ---
+    dados["exp_refref"] = dados["freq_refref_exp"] * n_individuos
+    dados["exp_refalt"] = dados["freq_refalt_exp"] * n_individuos
+    dados["exp_altalt"] = dados["freq_altalt_exp"] * n_individuos
+
+    # --- Teste χ² ---
+    dados["chi2"] = (
+        ((dados["ref.ref"] - dados["exp_refref"])**2 / dados["exp_refref"]) +
+        ((dados["ref.alt"] - dados["exp_refalt"])**2 / dados["exp_refalt"]) +
+        ((dados["alt.alt"] - dados["exp_altalt"])**2 / dados["exp_altalt"])
+    )
+
+    dados["p_valor"] = chi2.sf(dados["chi2"], df=1)
+    dados["desvio_HW"] = dados["p_valor"] < 0.05
+
     return dados
 
 # --- Processar e plotar ---
@@ -79,6 +94,18 @@ if file_short is not None and file_long is not None:
         st.pyplot(fig1)
     with col2:
         st.pyplot(fig2)
+
+    # --- Tabela resumo com p-valores ---
+    st.subheader("📊 Resumo estatístico (teste χ² de Hardy–Weinberg)")
+    col_tab1, col_tab2 = st.columns(2)
+    with col_tab1:
+        st.write("**Braço curto:**")
+        st.dataframe(dados_curto[["rsid", "chi2", "p_valor", "desvio_HW"]].head(10))
+        st.write(f"🔹 SNPs com desvio de H–W (p < 0.05): {dados_curto['desvio_HW'].sum()} / {len(dados_curto)}")
+    with col_tab2:
+        st.write("**Braço longo:**")
+        st.dataframe(dados_longo[["rsid", "chi2", "p_valor", "desvio_HW"]].head(10))
+        st.write(f"🔹 SNPs com desvio de H–W (p < 0.05): {dados_longo['desvio_HW'].sum()} / {len(dados_longo)}")
 
 else:
     st.info("👆 Envie os dois arquivos (.txt) para gerar os gráficos comparativos.")
