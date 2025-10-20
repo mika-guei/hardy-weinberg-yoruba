@@ -100,12 +100,13 @@ if file_short is not None and file_long is not None:
     col_tab1, col_tab2 = st.columns(2)
     with col_tab1:
         st.write("**Braço curto:**")
-        st.dataframe(dados_curto[["rsid", "chi2", "p_valor", "desvio_HW"]].head(10))
         st.write(f"🔹 SNPs com desvio de H–W (p < 0.05): {dados_curto['desvio_HW'].sum()} / {len(dados_curto)}")
+        st.dataframe(dados_curto[["rsid", "chi2", "p_valor", "desvio_HW"]].tail(25))
     with col_tab2:
         st.write("**Braço longo:**")
-        st.dataframe(dados_longo[["rsid", "chi2", "p_valor", "desvio_HW"]].head(10))
         st.write(f"🔹 SNPs com desvio de H–W (p < 0.05): {dados_longo['desvio_HW'].sum()} / {len(dados_longo)}")
+        st.dataframe(dados_longo[["rsid", "chi2", "p_valor", "desvio_HW"]].tail(25))
+        
 
 else:
     st.info("👆 Envie os dois arquivos (.txt) para gerar os gráficos comparativos.")
