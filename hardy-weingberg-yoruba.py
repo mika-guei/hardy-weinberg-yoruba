@@ -33,9 +33,9 @@ def processar_dados(arquivo):
     dados["freq_altalt_es"] = dados["alt"]**2
 
   # --- Números esperados (para χ²) ---
-    dados["es_refref"] = dados["freq_refref_exp"] * n_individuos
-    dados["es_refalt"] = dados["freq_refalt_exp"] * n_individuos
-    dados["es_altalt"] = dados["freq_altalt_exp"] * n_individuos
+    dados["es_refref"] = dados["freq_refref_es"] * n_individuos
+    dados["es_refalt"] = dados["freq_refalt_es"] * n_individuos
+    dados["es_altalt"] = dados["freq_altalt_es"] * n_individuos
 
     # --- Teste χ² ---
     dados["chi2"] = (
