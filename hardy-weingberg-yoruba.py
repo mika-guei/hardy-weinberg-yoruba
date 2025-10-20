@@ -32,13 +32,17 @@ def processar_dados(arquivo):
     dados["freq_refalt_es"] = 2 * dados["alt"] * (1 - dados["alt"])
     dados["freq_altalt_es"] = dados["alt"]**2
 
-    # --- Teste chi2 ---
-    dados["chi2"] = (
-        ((dados["ref.ref"] - dados["freq_refref_es"])**2 / dados["freq_refref_es"]) +
-        ((dados["ref.alt"] - dados["freq_refalt_es"])**2 / dados["freq_refalt_es"]) +
-        ((dados["alt.alt"] - dados["freq_altalt_es"])**2 / dados["freq_altalt_es"])
-    )
+  # --- Números esperados (para χ²) ---
+    dados["es_refref"] = dados["freq_refref_exp"] * n_individuos
+    dados["es_refalt"] = dados["freq_refalt_exp"] * n_individuos
+    dados["es_altalt"] = dados["freq_altalt_exp"] * n_individuos
 
+    # --- Teste χ² ---
+    dados["chi2"] = (
+        ((dados["ref.ref"] - dados["es_refref"])**2 / dados["es_refref"]) +
+        ((dados["ref.alt"] - dados["es_refalt"])**2 / dados["es_refalt"]) +
+        ((dados["alt.alt"] - dados["es_altalt"])**2 / dados["es_altalt"])
+    )
     dados["p_valor"] = chi2.sf(dados["chi2"], df=1)
     dados["desvio_HW"] = dados["p_valor"] < 0.05
 
